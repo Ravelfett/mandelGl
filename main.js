@@ -85,6 +85,7 @@ function main() {
     uniform vec2 uPosition;
     uniform vec2 uCamera;
     uniform float uZoom;
+	uniform float uTime;
 
 
     vec3 hslToRgb( in vec3 c )
@@ -105,7 +106,7 @@ function main() {
           point = vec2(pow(point.x,2.)-pow(point.y,2.)+c.x,2.0*point.x*point.y+c.y);
         }
       }
-      vec3 hslColor = vec3(267./360., 1, ((float(ct)/float(P))));
+      vec3 hslColor = vec3(uTime/360., 1., ((float(ct)/float(P))));
       gl_FragColor = vec4(hslToRgb(hslColor),1.);
     }
   `;
@@ -123,6 +124,7 @@ function main() {
       position: gl.getUniformLocation(shaderProgram, 'uPosition'),
       camera: gl.getUniformLocation(shaderProgram, 'uCamera'),
       zoom: gl.getUniformLocation(shaderProgram, 'uZoom'),
+	  time: gl.getUniformLocation(shaderProgram, 'uTime'),
     },
   };
   const buffers = initBuffers(gl);
@@ -214,6 +216,9 @@ function drawScene(gl, programInfo, buffers, pos, camera, zoom, width, height) {
   gl.uniform2fv(
       programInfo.uniformLocations.camera,
       new Float32Array(camera));
+  gl.uniform1f(
+      programInfo.uniformLocations.time,
+      (Date.now()/10)%360);
   gl.uniform1f(
       programInfo.uniformLocations.zoom,
       zoom);
